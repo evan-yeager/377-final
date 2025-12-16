@@ -9,6 +9,11 @@ nav {
   width: 100%;
 }
 
+nav > *:not(:first-child) {
+  border-left: 2px solid #ddd;
+  padding-left: 15px;
+}
+
 .navbar a {
   color: #333;
   text-decoration: none;
