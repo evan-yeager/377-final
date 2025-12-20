@@ -17,6 +17,10 @@ const About: React.FC = () => {
             <p>
                 The number of cat facts you receive is determined by your mood level, which you can set using the mood slider. The sadder you are (lower mood level), the more cat facts you'll get to help cheer you up! If you're really feeling down, feel free to continue clicking the buttons for more facts and images.
             </p>
+            <br /><h3>Database integration</h3>
+            <p>
+                There is a database integration feature! Although we don't store data from the public APIs (that's what they are there for), we do store some information. Namely, the amount of times an API was queried over the lifetime of the app, and the user ratings of each API section. For example, the duck section might have generated 23 total photos and have a 3/5 rating by our users. Go ahead and give it a try! 
+            </p>
         </main>
     );
 };
