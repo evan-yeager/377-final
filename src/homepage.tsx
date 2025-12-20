@@ -1,10 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import 'range-slider-element';
 import 'range-slider-element/style.css';
+import { DatabaseService, type AnimalCount } from './db_service';
 
 const Homepage: React.FC = () => {
     const [moodLevel, setMoodLevel] = useState(5);
     const sliderRef = useRef<any>(null);
+    const [count, setCount] = useState<AnimalCount | null>(null);
+    const dbService: DatabaseService = new DatabaseService();
 
     // Set up the event listener for the range slider
     useEffect(() => {
@@ -23,6 +26,15 @@ const Homepage: React.FC = () => {
         };
     }, []);
 
+    // Load the counts
+    useEffect(() => {
+        const loadCount = async () => {
+            const count = await dbService.getCount();
+            setCount(count);
+        };
+        loadCount();
+    }, []);
+    
     const loadFox = async () => {
         const container = document.getElementById('foxContainer');
         if (!container) return;
@@ -31,8 +43,14 @@ const Homepage: React.FC = () => {
         const response = await fetch('https://randomfox.ca/floof/');
         const responseBody = await response.json();
         const url: string = responseBody.image;
+
         setTimeout(() => {
             container.innerHTML = `<img src="${url}" alt="Random fox"/>`;
+            if (!count) return;
+
+            const newCount = { ...count, fox: count.fox + 1 }; 
+            setCount(newCount);
+            dbService.updateCount(newCount);
         }, 500);
     };
 
@@ -46,6 +64,11 @@ const Homepage: React.FC = () => {
         const url: string = responseBody.url;
         setTimeout(() => {
             container.innerHTML = `<img src="${url}" alt="Random duck"/>`;
+            if (!count) return;
+
+            const newCount = { ...count, duck: count.duck + 1 }; 
+            setCount(newCount);
+            dbService.updateCount(newCount);
         }, 500);
     };
 
@@ -70,6 +93,12 @@ const Homepage: React.FC = () => {
         `);
             }
             container.innerHTML = factText.join('');
+            
+            if (!count) return;
+
+            const newCount = { ...count, cat: count.cat + factCount }; 
+            setCount(newCount);
+            dbService.updateCount(newCount);
         }, 500);
     };
 
@@ -103,6 +132,7 @@ const Homepage: React.FC = () => {
             <div className="content-grid">
                 <div className="card">
                     <h3>🦊 Random Fox</h3>
+                    <p className='db-count'>{count ? `${JSON.stringify(count.fox)} fox pictures generated` : 'Loading...'}</p>
                     <div className="image-container" id="foxContainer">
                         <span className="placeholder">Click button to load</span>
                     </div>
@@ -111,6 +141,7 @@ const Homepage: React.FC = () => {
 
                 <div className="card">
                     <h3>🦆 Random Duck</h3>
+                    <p className='db-count'>{count ? `${JSON.stringify(count.duck)} duck pictures generated` : 'Loading...'}</p>
                     <div className="image-container" id="duckContainer">
                         <span className="placeholder">Click button to load</span>
                     </div>
@@ -120,6 +151,7 @@ const Homepage: React.FC = () => {
 
             <div className="cat-facts-section">
                 <h2>🐱 Cat Facts Corner</h2>
+                <p className='db-count'>{count ? `${JSON.stringify(count.cat)} cat facts generated` : 'Loading...'}</p>
                 <div className="facts-container" id="factsContainer">
                     <p style={{ textAlign: 'center', color: '#999' }}>
                         Move the mood slider and click the button below to load cat facts!
