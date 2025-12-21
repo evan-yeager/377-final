@@ -1,4 +1,3 @@
-import { useState } from "react";
 import "./home.css";
 import { Tabs } from "@chakra-ui/react";
 import FAQ from "./faq";
