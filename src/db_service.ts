@@ -6,6 +6,12 @@ export interface AnimalCount {
     cat: number;
 }
 
+export interface RatingData {
+    id: number;
+    num_ratings: number;
+    rating: number;
+}
+
 export class DatabaseService {
     private supabase: any;
 
@@ -27,7 +33,7 @@ export class DatabaseService {
 
         if (error) {
             console.error("Error fetching animal count:", error);
-            throw error; // or handle appropriately
+            throw error;
         }
 
         if (!data[0]) {
@@ -40,7 +46,6 @@ export class DatabaseService {
             cat: data[0].cat_count,
         };
 
-        console.log(data[0]);
         return output;
     }
 
@@ -48,6 +53,29 @@ export class DatabaseService {
         await this.supabase
             .from("animal_count")
             .update({ fox_count: animalCount.fox, duck_count: animalCount.duck, cat_count: animalCount.cat })
+            .eq("id", 1)
+            .select();
+    }
+
+    async getRating(animal: 'fox' | 'duck' | 'cat') {
+        const { data, error } = await this.supabase.from(`${animal}_rating`).select();
+
+        if (error) {
+            console.log("error in fetching ratings from the database");
+            throw error;
+        }
+
+        if (!data[0]) {
+            throw new Error("No animal rating data found");
+        }
+
+        return data[0];
+    }
+
+    async updateRating(animal: 'fox' | 'duck' | 'cat', rating: RatingData) {
+        await this.supabase
+            .from(`${animal}_rating`)
+            .update(rating)
             .eq("id", 1)
             .select();
     }

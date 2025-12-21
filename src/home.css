@@ -67,7 +67,6 @@ range-slider {
   flex: 1;
   height: 8px;
   border-radius: 5px;
-  /* background: linear-gradient(to right, #ff6b6b, #ffd93d, #6bcf7f); */
   outline: none;
 }
 
@@ -216,6 +215,33 @@ range-slider::-moz-range-thumb {
 
 .load-facts-btn {
   margin-top: 20px;
+}
+
+.rating-container {
+  display: flex;
+  gap: 0;
+}
+
+.star {
+  cursor: pointer;
+  font-size: 1.2em;
+  transition: transform 0.2s ease, filter 0.2s ease;
+  filter: grayscale(100%);
+  user-select: none;
+}
+
+.star:hover {
+  transform: scale(1.2);
+  filter: grayscale(0%);
+}
+
+.star.active {
+  filter: grayscale(0%);
+}
+
+.db-count {
+  font-size: 0.9em;
+  color: #666;
 }
 
 @media (max-width: 768px) {
